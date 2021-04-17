@@ -1,0 +1,13 @@
+<form id="composer" onsubmit="return sendAndClear();">
+  <div id="row" style="border: 1px solid #17494D; border-radius: 20px;">
+    <input id="message" type="text" placeholder="Type a message..."><input type="image" src="<%= require('./img_submit.png') %>" alt="Submit" id="send" value="send">
+  </div>
+  <div id="row" style="justify-content: center;">
+    <span>↓</span>
+    <label class="switch">
+      <input id="direction" type="checkbox" checked="true">
+      <span class="slider round"></span>
+    </label>
+    <span>↑</span>
+  </div>
+</form>
