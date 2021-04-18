@@ -13,15 +13,15 @@ function sendAndClear() {
   const message = textbox.value;
   const direction = document.getElementById('direction') as HTMLInputElement;
   parent.postMessage({ pluginMessage: { type: 'create-message', message: message, direction: direction.checked } }, '*');
-  direction.checked = !direction.checked
+  // direction.checked = !direction.checked
   textbox.value = "";
   textbox.focus();
   return false;
 }
 
 onmessage = (event) => {
-  if (event.data.pluginMessage == true){
-    const direction = document.getElementById('direction') as HTMLInputElement;
-    direction.checked = !direction.checked
-  }
+  // if (event.data.pluginMessage == true){
+  //   const direction = document.getElementById('direction') as HTMLInputElement;
+  //   direction.checked = !direction.checked
+  // }
 }
