@@ -63,70 +63,23 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   let lastMessage = conversation.children[conversation.children.length-1] as InstanceNode
   //..and Set the messageCount to the numbered name of this message
   messageCount = parseInt(lastMessage.name)
+  
+  //Create a new message...
+  let messageGroupComponent: ComponentNode
+  await figma.importComponentSetByKeyAsync("98e8f2af5cef20537dfbfb1dc294f6fc1f60d466").then( messageGroupComponentSet => {
+    messageGroupComponent = directionIsOutbound ? messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode : messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
+  })
+  var nextMessage = messageGroupComponent?.createInstance()
+  nextMessage.name = (++messageCount).toString();
 
-  // //If direction hasn't changed since last message...
-  // if (lastMessage.mainComponent.name.includes(directionIsOutbound? "Direction=Outbound" : "Direction=Inbound")) {
-  //   //TODO: Change varient to N+1 messages, and set message text.
-  //   let newKey
-  //   switch (lastMessage.mainComponent.key){
-  //     case "4c1a3d695cfe125e9f2c957a1fb83e7c748de0d7":
-  //       newKey = "22af29dc7cc1e8ac0fa8a5a112ce3f13a7daa616"
-  //       break
-  //     case "22af29dc7cc1e8ac0fa8a5a112ce3f13a7daa616":
-  //       newKey = "32bdaa3914802e1a5b918df13dabcc432cc66898"
-  //       break
-  //     case "356952b15a1188c0bb1fdb33754966059bdcbc4c":
-  //       newKey = "b2266d9ffd4bb85b37a5ca731aafbfa7ea5c227b"
-  //       break
-  //     case "b2266d9ffd4bb85b37a5ca731aafbfa7ea5c227b":
-  //       newKey = "c4be4d8f99520f6a150a002f85a2debceeb3e9f9"
-  //       break
-  //     default:
-  //       newKey = lastMessage.mainComponent.key
-  //       break
-  //   }
+  //Turn off receipts on previous message, if there is one
+  let receipt = lastMessage.findOne(node => node.name == ".Receipt/Inbound" || node.name == ".Receipt/Outbound")
+  if (receipt) receipt.visible = false
 
-  //   await figma.importComponentByKeyAsync(newKey).then(component => {
-  //     let persistMessageGroup = lastMessage
-  //     let persistName = lastMessage.name
-  //     let persistMessage1 = ((lastMessage.findOne(node => node.name == "Message 1") as InstanceNode).findOne(node => node.name == "✏️Text") as TextNode).characters
-
-  //     lastMessage.mainComponent = component
-  //     lastMessage.name = persistName
-  //     var nextMessage = lastMessage
-  //   })
-  // } else {
-    //Create a new message...
-    let messageGroupComponent: ComponentNode
-    await figma.importComponentSetByKeyAsync("98e8f2af5cef20537dfbfb1dc294f6fc1f60d466").then( messageGroupComponentSet => {
-      messageGroupComponent = directionIsOutbound ? messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode : messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
-    })
-    var nextMessage = messageGroupComponent?.createInstance()
-    nextMessage.name = (++messageCount).toString();
-
-    //TODO: If the message is long, make it a multiline message.
-    // if(messageText.length < 15){
-    //   let message1 = nextMessage.findOne(node => node.type === "INSTANCE" && node.name == "Message 1") as InstanceNode
-    //   let messageComponent: ComponentNode
-    //   await figma.importComponentSetByKeyAsync(message1.mainComponent.key).then( messageComponentSet => {
-    //     debugger
-    //     messageComponent = messageComponentSet.findChild(component => component.name === "Type=Text, Multiline=False, State=Sent") as ComponentNode
-    //   })
-    //   // // let bub = message1.mainComponent
-    //   // // bub.name = "Type=Text, Multiline=False, State=Sent"
-    //   message1 = messageComponent.createInstance()
-    // }
-
-    //Turn off receipts on previous message, if there is one
-    let receipt = lastMessage.findOne(node => node.name == ".Receipt/Inbound" || node.name == ".Receipt/Outbound")
-    if (receipt) receipt.visible = false
-
-    //Insert the new message.
-    conversation.insertChild(messageCount, nextMessage);
-    const nodes: SceneNode[] = [];
-    nodes.push(conversation.children[conversation.children.length - 1]);
-    // figma.viewport.scrollAndZoomIntoView(nodes);
-  // }
+  //Insert the new message.
+  conversation.insertChild(messageCount, nextMessage);
+  const nodes: SceneNode[] = [];
+  nodes.push(conversation.children[conversation.children.length - 1]);
 
   //Set the author label, if it is an inbound message
   if (!directionIsOutbound) {
