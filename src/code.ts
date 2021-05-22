@@ -1,5 +1,5 @@
 var messageCount: number = 0
-var conversation: FrameNode
+var log: FrameNode
 
 // This plugin will open a window to prompt the user to enter a message, and
 // it will then create a message symbol with that text on screen.
@@ -17,30 +17,77 @@ figma.ui.resize(400, 48)
 // posted message.
 figma.ui.onmessage = async msg => {
   // Look for a 'Conversation' frame...
-  conversation = figma.currentPage.findOne(node => node.type === "FRAME" && node.name == "Log") as FrameNode;
+  log = figma.currentPage.findOne(node => node.type === "FRAME" && node.name == "Log") as FrameNode;
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this...
   if (msg.type === 'create-message') {
     await sendMessage(msg.message, msg.direction);
   } else if (msg.type === 'setup') {
     //If there is not a conversation...
-    if (!conversation) {
-      //Make a conversation frame
-      conversation = figma.createFrame()
-      conversation.name = "Log"
-      conversation.resize(480, 1800)
-      let bgPaint = figma.getLocalPaintStyles().find(paintStyle => paintStyle.name == "BG").paints[0] as SolidPaint
-      let fills = clone(conversation.fills)
-      fills[0].color = bgPaint.color
-      conversation.fills = fills
-      figma.currentPage.appendChild(conversation)
+    if (!log) {
+      //Make the container
+      let widget = figma.createFrame()
+      widget.name = "Widget"
+      widget.resize(380, 780)
+      widget.clipsContent = false
+      widget.fills = []
+      widget.layoutMode = "VERTICAL"
+      widget.primaryAxisSizingMode = "AUTO"
+      widget.counterAxisAlignItems = "MAX"
+      widget.itemSpacing = 8
+
+      //Make the messenger
+      let messenger = figma.createFrame()
+      messenger.name = "Messenger"
+      messenger.resize(380, 700)
+      messenger.layoutMode = "VERTICAL"
+      messenger.primaryAxisSizingMode = "FIXED"
+      let backgroundStyle = await figma.importStyleByKeyAsync("8a51f0a179f0ad6d5af3e3329681bcd33e0f748c").catch(() => {
+        figma.ui.postMessage("Zcripter requires the '00 Zendesk Theme - Light (Default)' library.")
+        figma.closePlugin()
+      }) as BaseStyle
+      messenger.fillStyleId = backgroundStyle.id
+      let backgroundEffect =  await figma.importStyleByKeyAsync("20b0405ad7024a20ad878b90b3b75bd5bb26443a").catch(() => {
+        figma.ui.postMessage("Zcripter requires the 'Garden' library.")
+        figma.closePlugin()
+      }) as BaseStyle
+      messenger.effectStyleId = backgroundEffect.id
+      widget.appendChild(messenger)
+
+      //Make the launcher
+      let launcher = (await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de")).createInstance()
+      widget.appendChild(launcher)
+
+      //Make the header
+      let header = (await figma.importComponentByKeyAsync("da85778fa3e3f54485fcedfe1bf2476f851f2f41")).createInstance()
+      let title = header.findChild(node => node.name == "✏️Title") as TextNode
+      await figma.loadFontAsync(title.fontName as FontName)
+      title.characters = "Zendesk"
+      header.layoutAlign = "STRETCH"
+      messenger.appendChild(header)
+
+      //Make a log frame
+      log = figma.createFrame()
+      log.name = "Log"
+      log.resize(380, 1)
+      log.layoutMode = "VERTICAL"
+      log.layoutGrow = 1
+      log.layoutAlign = "STRETCH"
+      messenger.appendChild(log)
+
+      //Make the composer
+      let composer = (await figma.importComponentByKeyAsync("0cdeaec0c5baf216b6c74d1a939a9c94e025f1df")).createInstance()
+      composer.layoutAlign = "STRETCH"
+      messenger.appendChild(composer)
+
+      figma.currentPage.appendChild(widget)
       const nodes: SceneNode[] = []
-      nodes.push(conversation)
+      nodes.push(widget)
       figma.currentPage.selection = nodes
       figma.viewport.scrollAndZoomIntoView(nodes)
     }
     //Now that we are sure there is a conversation, check if there is any messages.
-    var firstMessage = conversation.findChild(node => node.name == "0" && node.type === "INSTANCE")
+    var firstMessage = log.findChild(node => node.name == "0" && node.type === "INSTANCE")
     //If there is no first message...
     if (!firstMessage){
       //Create a first welcome messsage...
@@ -49,18 +96,16 @@ figma.ui.onmessage = async msg => {
       })
       firstMessage.name = "0"
       messageCount = 0
-      conversation.insertChild(0,firstMessage)
-      const nodes: SceneNode[] = []
-      nodes.push(conversation)
-      conversation.layoutMode = "VERTICAL"
-      figma.viewport.scrollAndZoomIntoView(nodes)
+      firstMessage.layoutAlign = "STRETCH"
+      //TODO set text to todays date
+      log.insertChild(0,firstMessage)
     }
   }
 };
 
 async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   //Find the last message in the conversation frame...
-  let lastMessage = conversation.children[conversation.children.length-1] as InstanceNode
+  let lastMessage = log.children[log.children.length-1] as InstanceNode
   //..and Set the messageCount to the numbered name of this message
   messageCount = parseInt(lastMessage.name)
   
@@ -70,16 +115,15 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
     messageGroupComponent = directionIsOutbound ? messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode : messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
   })
   var nextMessage = messageGroupComponent?.createInstance()
+  nextMessage.layoutAlign = "STRETCH"
   nextMessage.name = (++messageCount).toString();
 
   //Turn off receipts on previous message, if there is one
-  let receipt = lastMessage.findOne(node => node.name == ".Receipt/Inbound" || node.name == ".Receipt/Outbound")
+  let receipt = lastMessage.findOne(node => node.name == "Receipt")
   if (receipt) receipt.visible = false
 
   //Insert the new message.
-  conversation.insertChild(messageCount, nextMessage);
-  const nodes: SceneNode[] = [];
-  nodes.push(conversation.children[conversation.children.length - 1]);
+  log.insertChild(messageCount, nextMessage);
 
   //Set the author label, if it is an inbound message
   if (!directionIsOutbound) {
