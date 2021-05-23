@@ -16,8 +16,10 @@ figma.ui.resize(400, 48)
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
 figma.ui.onmessage = async msg => {
-  // Look for a 'Conversation' frame...
-  log = figma.currentPage.findOne(node => node.type === "FRAME" && node.name == "Log") as FrameNode;
+  //Look for a "Widget"
+  let widget = figma.currentPage.selection.find(node => node.type === "FRAME" && node.name == "Widget") as FrameNode
+  // Look for a 'Log' frame...
+  if (widget) log = widget.findOne(node => node.type === "FRAME" && node.name == "Log") as FrameNode;
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this...
   if (msg.type === 'create-message') {
@@ -31,9 +33,13 @@ figma.ui.onmessage = async msg => {
 //~~Function to set up a new conversation~~//
 async function setUp() {
   if (!log) {
+    //Find last widget...
+    let otherWidgets = figma.currentPage.findAll(node => node.name == "Widget")
+
     //Make the container
     let widget = figma.createFrame();
     widget.name = "Widget";
+    if (otherWidgets) widget.x = otherWidgets[otherWidgets.length-1].x + 480
     widget.resize(380, 780);
     widget.clipsContent = false;
     widget.fills = [];
