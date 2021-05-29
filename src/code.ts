@@ -132,9 +132,21 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   //..and Set the messageCount to the numbered name of this message
   messageCount = parseInt(lastMessage.name)
 
-  //If participant has changed since last message...
-  //TODO need to properly account for first message - incorrectly registers as false if first message is inbound!
-  if (directionIsOutbound != lastMessage.mainComponent.name.startsWith("Direction=Outbound")) {
+  //If participant hasn't changed since last message...
+  if ((directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Outbound")) ||
+  (!directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Inbound"))) {
+    //Add to the existing group
+    positionInGroup = lastMessage.findAll(node => node.name.startsWith("Message ")).length
+    if (positionInGroup < 3) {
+      //TODO Investigate making this scalable beyond 3 messages by appending an new message, vs swapping component.
+      var nextMessage = lastMessage
+      nextMessage.swapComponent(nextMessage.mainComponent.parent.findChild(node => node.name == nextMessage.mainComponent.name.substr(0, nextMessage.mainComponent.name.length-1) + (positionInGroup + 1)) as ComponentNode)
+    } else {
+      positionInGroup = 2
+      var nextMessage = lastMessage
+      figma.notify("Conversation Kit currently only supports 3 consecutive messages.")
+    }
+  } else {
     positionInGroup = 0
     //Create a new message...
     let messageGroupComponent: ComponentNode
@@ -158,17 +170,6 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
       await figma.loadFontAsync(label.fontName as FontName).then(() => {
         label.characters = "Marilyn Collins";
       });
-    }
-  } else {
-    positionInGroup = lastMessage.findAll(node => node.name.startsWith("Message ")).length
-    if (positionInGroup < 3) {
-      //TODO Investigate making this scalable beyond 3 messages by appending an new message, vs swapping component.
-      var nextMessage = lastMessage
-      nextMessage.swapComponent(nextMessage.mainComponent.parent.findChild(node => node.name == nextMessage.mainComponent.name.substr(0, nextMessage.mainComponent.name.length-1) + (positionInGroup + 1)) as ComponentNode)
-    } else {
-      positionInGroup = 2
-      var nextMessage = lastMessage
-      figma.notify("Conversation Kit currently only supports 3 consecutive messages.")
     }
   }
 
