@@ -43,6 +43,7 @@ async function setUp() {
 
     //Make the container
     let widget = figma.createFrame();
+    widget.setRelaunchData({ open: "" });
     widget.name = "Widget";
     // If there are other containers, offset it to the right of the last one.
     if (otherWidgets.length > 0) widget.x = otherWidgets[otherWidgets.length-1].x + 480
@@ -56,6 +57,7 @@ async function setUp() {
 
     //Make the messenger
     let messenger = figma.createFrame();
+    messenger.setRelaunchData({ open: "" });
     messenger.name = "Messenger";
     messenger.resize(380, 700);
     messenger.layoutMode = "VERTICAL";
@@ -92,6 +94,7 @@ async function setUp() {
     log.layoutGrow = 1;
     log.layoutAlign = "STRETCH";
     log.overflowDirection = "VERTICAL";
+    log.fills = [];
     messenger.appendChild(log);
 
     //Make the composer
@@ -130,6 +133,7 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   messageCount = parseInt(lastMessage.name)
 
   //If participant has changed since last message...
+  //TODO need to properly account for first message - incorrectly registers as false if first message is inbound!
   if (directionIsOutbound != lastMessage.mainComponent.name.startsWith("Direction=Outbound")) {
     positionInGroup = 0
     //Create a new message...
