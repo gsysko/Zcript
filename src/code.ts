@@ -80,7 +80,7 @@ async function setUp() {
 
     //Make the header
     let header = (await figma.importComponentByKeyAsync("da85778fa3e3f54485fcedfe1bf2476f851f2f41")).createInstance();
-    let title = header.findChild(node => node.name == "✏️Title") as TextNode;
+    let title = header.findChild(node => node.name == "Title") as TextNode;
     await figma.loadFontAsync(title.fontName as FontName);
     title.characters = "Zendesk";
     header.layoutAlign = "STRETCH";
@@ -166,7 +166,7 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
 
     //Set the author label, if it is an inbound message
     if (!directionIsOutbound) {
-      let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "✏️Label") as TextNode;
+      let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
       await figma.loadFontAsync(label.fontName as FontName).then(() => {
         label.characters = "Marilyn Collins";
       });
@@ -174,7 +174,7 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   }
 
   //Set the message text
-  let message = nextMessage.findAll(node => node.type === "TEXT" && node.name == "✏️Text")[positionInGroup] as TextNode;
+  let message = nextMessage.findAll(node => node.type === "TEXT" && node.name == "Text")[positionInGroup] as TextNode;
   await figma.loadFontAsync(message.fontName as FontName).then(() => {
     message.characters = messageText;
   });
