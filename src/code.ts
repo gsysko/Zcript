@@ -12,6 +12,13 @@ var log: FrameNode
 figma.showUI(__html__)
 figma.ui.resize(400, 48)
 
+//Secret bootstrap point setter -- commment out when not in use.
+// let launcher = figma.currentPage.selection.find(node => (node.type == "COMPONENT" || node.type == "INSTANCE") && node.parent.name == "Launcher")
+// if (launcher){
+//   launcher.setRelaunchData({start: ""})
+//   figma.closePlugin()
+// }
+
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
 // posted message.
@@ -75,7 +82,16 @@ async function setUp() {
     widget.appendChild(messenger);
 
     //Make the launcher
-    let launcher = (await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de")).createInstance();
+    let launcher
+    if(figma.command == "start"){
+      launcher = figma.currentPage.selection.find(node => node.type == "INSTANCE" && node.name == "Launcher") as InstanceNode
+      widget.x = launcher.x - 308
+      widget.y = launcher.y - 708
+      launcher.swapComponent(await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de"))
+    } else {
+      launcher = (await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de")).createInstance()
+    }
+    launcher.setRelaunchData({})
     widget.appendChild(launcher);
 
     //Make the header
