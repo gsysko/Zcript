@@ -5,6 +5,7 @@
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "relaunchButtons": [
-    {"command": "open", "name": "Add messages"}
+    {"command": "open", "name": "Add messages"},
+    {"command": "start", "name": "Start conversation"}
   ]
 }
