@@ -125,17 +125,19 @@ async function setUp() {
     figma.viewport.scrollAndZoomIntoView(nodes);
   }
   //Now that we are sure there is a conversation, check if there is any messages.
-  var firstMessage = log.findChild(node => node.name == "0" && node.type === "INSTANCE");
+  var firstMessage = log.findChild(node => node.name == "0" && node.type === "INSTANCE") as InstanceNode;
   //If there is no first message...
   if (!firstMessage) {
-    //Create a first welcome messsage...
+    //Create a first timestamp messsage...
     await figma.importComponentByKeyAsync("663b06bfe927cf5574dc82c60e084da2ee5e99d9").then(timestampComponent => {
       firstMessage = timestampComponent.createInstance();
     });
     firstMessage.name = "0";
     messageCount = 0;
     firstMessage.layoutAlign = "STRETCH";
-    //TODO set text to todays date
+    let timestamp = firstMessage.findChild(node => node.type == "TEXT" && node.name.includes("Timestamp")) as TextNode
+    let d = new Date(Date.now())
+    setText(timestamp, d.toLocaleString('en-US', {month: "long", day: "numeric", hour: "numeric", minute: "numeric"}))
     log.insertChild(0, firstMessage);
   }
 }
@@ -206,6 +208,14 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   if (nextMessage.y + nextMessage.height > log.height) {
     log.primaryAxisAlignItems = "MAX"
   }
+}
+
+//~~~UTILITIES~~~//
+
+//~~Function to safely chance text on TextNodes.~~//
+async function setText(node: TextNode, text: string) {
+  await figma.loadFontAsync(node.fontName as FontName)
+  node.characters = text
 }
 
 //~~Function to clone fills, etc. so they can be set.~~//
