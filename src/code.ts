@@ -200,7 +200,8 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   });
 
   //Checkt that the message should not be multi-line
-  if(nextMessage.mainComponent.name.startsWith("Direction=Outbound") ? message.width > 324 : message.width > 288){
+  //TODO compare size of log width, so this would still work no matter the device width
+  if( nextMessage.mainComponent.name.startsWith("Direction=Outbound") ? message.width > 260 : message.width > 240 ){
     let messageComponent = (nextMessage.findAll(node => node.name.startsWith("Message "))[positionInGroup] as InstanceNode)
     let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
     messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
