@@ -137,7 +137,9 @@ async function setUp() {
     firstMessage.layoutAlign = "STRETCH";
     let timestamp = firstMessage.findChild(node => node.type == "TEXT" && node.name.includes("Timestamp")) as TextNode
     let d = new Date(Date.now())
-    setText(timestamp, d.toLocaleString('en-US', {month: "long", day: "numeric", hour: "numeric", minute: "numeric"}))
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    let locDate = months[d.getMonth()] + " " + d.getDate() + ", " + d.getHours()%12 + ":" + d.getMinutes() + " " + (d.getHours()/12 < 1 ? "AM" : "PM")
+    setText(timestamp, locDate)
     log.insertChild(0, firstMessage);
   }
 }
