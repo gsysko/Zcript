@@ -138,7 +138,7 @@ async function setUp() {
     let timestamp = firstMessage.findChild(node => node.type == "TEXT" && node.name.includes("Timestamp")) as TextNode
     let d = new Date(Date.now())
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let locDate = months[d.getMonth()] + " " + d.getDate() + ", " + d.getHours()%12 + ":" + ("0" + d.getMinutes()).slice(-2) + " " + (d.getHours()/12 < 1 ? "AM" : "PM")
+    let locDate = months[d.getMonth()] + " " + d.getDate() + ", " + (d.getHours() > 12 ? d.getHours()%12 : d.getHours()) + ":" + ("0" + d.getMinutes()).slice(-2) + " " + (d.getHours()/12 < 1 ? "AM" : "PM")
     setText(timestamp, locDate)
     log.insertChild(0, firstMessage);
   }
