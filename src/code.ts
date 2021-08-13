@@ -53,7 +53,13 @@ async function setUp() {
     widget.setRelaunchData({ open: "" });
     widget.name = "Widget";
     // If there are other containers, offset it to the right of the last one.
-    if (otherWidgets.length > 0) widget.x = otherWidgets[otherWidgets.length-1].x + 480
+    if (otherWidgets.length > 0) {
+      widget.x = otherWidgets[otherWidgets.length-1].x + 480
+      widget.y = otherWidgets[otherWidgets.length-1].y
+    } else {
+      widget.x = figma.viewport.center.x - 190
+      widget.y = figma.viewport.center.y - 390
+    }
     widget.resize(380, 780);
     widget.clipsContent = false;
     widget.fills = [];
@@ -82,12 +88,13 @@ async function setUp() {
     widget.appendChild(messenger);
 
     //Make the launcher
-    let launcher
+    let launcher: InstanceNode
     if(figma.command == "start"){
       launcher = figma.currentPage.selection.find(node => node.type == "INSTANCE" && node.name == "Launcher") as InstanceNode
       widget.x = launcher.x - 308
       widget.y = launcher.y - 708
-      launcher.swapComponent(await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de"))
+      launcher.swapComponent(await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de"));
+      launcher.parent.appendChild(widget)
     } else {
       launcher = (await figma.importComponentByKeyAsync("c5f2c7b8417b86629a8e52aa37ebe2c065a2c6de")).createInstance()
     }
@@ -96,11 +103,11 @@ async function setUp() {
 
     //Make the header
     let header = (await figma.importComponentByKeyAsync("da85778fa3e3f54485fcedfe1bf2476f851f2f41")).createInstance();
+    messenger.appendChild(header);
     let title = header.findChild(node => node.name == "Title") as TextNode;
-    await figma.loadFontAsync(title.fontName as FontName);
+    await figma.loadFontAsync(title.fontName as FontName).then();
     title.characters = "Zendesk";
     header.layoutAlign = "STRETCH";
-    messenger.appendChild(header);
 
     //Make a log frame
     log = figma.createFrame();
@@ -118,7 +125,6 @@ async function setUp() {
     composer.layoutAlign = "STRETCH";
     messenger.appendChild(composer);
 
-    figma.currentPage.appendChild(widget);
     const nodes: SceneNode[] = [];
     nodes.push(widget);
     figma.currentPage.selection = nodes;
