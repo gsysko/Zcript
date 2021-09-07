@@ -2,6 +2,7 @@
   "name": "Zcript",
   "id": "964914329437609400",
   "api": "1.0.0",
+  "editorType": ["figma"],
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "relaunchButtons": [
