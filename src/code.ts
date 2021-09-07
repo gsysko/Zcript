@@ -75,8 +75,8 @@ async function setUp() {
     messenger.resize(380, 700);
     messenger.layoutMode = "VERTICAL";
     messenger.primaryAxisSizingMode = "FIXED";
-    let backgroundStyle = await figma.importStyleByKeyAsync("8a51f0a179f0ad6d5af3e3329681bcd33e0f748c").catch(() => {
-      figma.notify("Zcripter requires the '00 Zendesk Theme - Light (Default)' library.");
+    let backgroundStyle = await figma.importStyleByKeyAsync("e94370ef7b3a645e93bd29da94dc67ad6b6ec52e").catch(() => {
+      figma.notify("Zcripter requires the 'Zendesk Theme (Default)' library.");
       figma.closePlugin();
     }) as BaseStyle;
     messenger.fillStyleId = backgroundStyle.id;
