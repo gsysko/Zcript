@@ -10,7 +10,7 @@ var log: FrameNode
 
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__)
-figma.ui.resize(400, 48)
+figma.ui.resize(360, 72)
 
 //Secret bootstrap point setter -- commment out when not in use.
 // let launcher = figma.currentPage.selection.find(node => (node.type == "COMPONENT" || node.type == "INSTANCE") && node.parent.name == "Launcher")
@@ -34,8 +34,10 @@ figma.ui.onmessage = async msg => {
   }
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this...
-  if (msg.type === 'create-message') {
-    await sendMessage(msg.message, msg.direction);
+  if (msg.type === 'send-message') {
+    await sendMessage(msg.message);
+  } else if (msg.type === 'receive-message') {
+    await receiveResponse(msg.message.choices[0].text);
   } else if (msg.type === 'setup') {
     //If there is not a conversation...
     await setUp();
@@ -151,7 +153,7 @@ async function setUp() {
 }
 
 //~~Function to send a message~~//
-async function sendMessage(messageText: string, directionIsOutbound: boolean) {
+async function sendMessage(messageText: string) {
   let positionInGroup: number;
   //Find the last message in the conversation frame...
   let lastMessage = log.children[log.children.length-1] as InstanceNode
@@ -159,8 +161,7 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
   messageCount = parseInt(lastMessage.name)
 
   //If participant hasn't changed since last message...
-  if ((directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Outbound")) ||
-  (!directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Inbound"))) {
+  if (lastMessage.mainComponent.name.startsWith("Direction=Outbound")) {
     //Add to the existing group
     positionInGroup = lastMessage.findAll(node => node.name.startsWith("Message ")).length
     if (positionInGroup < 3) {
@@ -177,7 +178,7 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
     //Create a new message...
     let messageGroupComponent: ComponentNode
     await figma.importComponentSetByKeyAsync("98e8f2af5cef20537dfbfb1dc294f6fc1f60d466").then( messageGroupComponentSet => {
-      messageGroupComponent = directionIsOutbound ? messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode : messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
+      messageGroupComponent = messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode
     })
     var nextMessage = messageGroupComponent?.createInstance()
     nextMessage.layoutAlign = "STRETCH"
@@ -189,14 +190,6 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
 
     //Insert the new message.
     log.insertChild(messageCount, nextMessage);
-
-    //Set the author label, if it is an inbound message
-    if (!directionIsOutbound) {
-      let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
-      await figma.loadFontAsync(label.fontName as FontName).then(() => {
-        label.characters = "Marilyn Collins";
-      });
-    }
   }
 
   //Set the message text
@@ -207,7 +200,61 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
 
   //Checkt that the message should not be multi-line
   //TODO compare size of log width, so this would still work no matter the device width
-  if( nextMessage.mainComponent.name.startsWith("Direction=Outbound") ? message.width > 260 : message.width > 240 ){
+  if( message.width > 260 ){
+    let messageComponent = (nextMessage.findAll(node => node.name.startsWith("Message "))[positionInGroup] as InstanceNode)
+    let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
+    messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
+  }
+
+  //Check that the log has not become filled
+  if (nextMessage.y + nextMessage.height > log.height) {
+    log.primaryAxisAlignItems = "MAX"
+  }
+
+  requestResponse(messageText)
+}
+
+//~~Function to receive a message~~//
+async function receiveResponse(messageText: string) {
+  let positionInGroup: number;
+  //Find the last message in the conversation frame...
+  let lastMessage = log.children[log.children.length-1] as InstanceNode
+  //..and Set the messageCount to the numbered name of this message
+  messageCount = parseInt(lastMessage.name)
+
+  //If participant hasn't changed since last message...
+  positionInGroup = 0
+  //Create a new message...
+  let messageGroupComponent: ComponentNode
+  await figma.importComponentSetByKeyAsync("98e8f2af5cef20537dfbfb1dc294f6fc1f60d466").then( messageGroupComponentSet => {
+    messageGroupComponent = messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
+  })
+  var nextMessage = messageGroupComponent?.createInstance()
+  nextMessage.layoutAlign = "STRETCH"
+  nextMessage.name = (++messageCount).toString();
+
+  //Turn off receipts on previous message, if there is one
+  let receipt = lastMessage.findOne(node => node.name == "Receipt")
+  if (receipt) receipt.visible = false
+
+  //Insert the new message.
+  log.insertChild(messageCount, nextMessage);
+
+  //Set the author label, if it is an inbound message
+  let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
+  await figma.loadFontAsync(label.fontName as FontName).then(() => {
+    label.characters = "Marilyn Collins";
+  });
+
+  //Set the message text
+  let message = nextMessage.findAll(node => node.type === "TEXT" && node.name == "Text")[positionInGroup] as TextNode;
+  await figma.loadFontAsync(message.fontName as FontName).then(() => {
+    message.characters = messageText;
+  });
+
+  //Checkt that the message should not be multi-line
+  //TODO compare size of log width, so this would still work no matter the device width
+  if( message.width > 240 ){
     let messageComponent = (nextMessage.findAll(node => node.name.startsWith("Message "))[positionInGroup] as InstanceNode)
     let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
     messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
@@ -249,4 +296,8 @@ function clone(val) {
     }
   }
   throw 'unknown'
+}
+
+function requestResponse(messageText: string) {
+  figma.ui.postMessage({ type: 'networkRequest' , message: messageText })
 }
