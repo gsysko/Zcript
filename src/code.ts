@@ -10,7 +10,7 @@ var log: FrameNode
 
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__)
-figma.ui.resize(400, 48)
+figma.ui.resize(400, 104)
 
 //Secret bootstrap point setter -- commment out when not in use.
 // let launcher = figma.currentPage.selection.find(node => (node.type == "COMPONENT" || node.type == "INSTANCE") && node.parent.name == "Launcher")
