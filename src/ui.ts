@@ -26,7 +26,7 @@ window.onmessage = async (event) => {
     var request = new XMLHttpRequest()
     request.open('POST', 'https://api.openai.com/v1/engines/curie/completions')
     request.setRequestHeader("Content-Type", "application/json")
-    request.setRequestHeader("Authorization", "Bearer ")
+    request.setRequestHeader("Authorization", "Bearer " + process.env.API_KEY)
     request.responseType = 'json'
     request.onload = () => {
       var response = request.response.choices[0].text

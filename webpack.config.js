@@ -2,6 +2,7 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
+const Dotenv = require('dotenv-webpack');
 
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
@@ -47,5 +48,6 @@ module.exports = (env, argv) => ({
       chunks: ['ui'],
     }),
     new HtmlWebpackInlineSourcePlugin(),
+    new Dotenv(),
   ],
 })
