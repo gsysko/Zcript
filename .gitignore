@@ -3,6 +3,7 @@ node_modules
 npm-debug.log
 package-lock.json
 .env
+dist/
 
 # mac
 .DS_Store
