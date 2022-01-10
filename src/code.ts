@@ -240,11 +240,22 @@ async function receiveResponse(messageText: string) {
   //Insert the new message.
   log.insertChild(messageCount, nextMessage);
 
-  //Set the author label, if it is an inbound message
+  //Set the author label
   let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
   await figma.loadFontAsync(label.fontName as FontName).then(() => {
-    label.characters = "Marilyn Collins";
+    label.characters = "Answer Bot";
   });
+
+  //Set the avatar
+  let avatar = nextMessage.findOne(node => node.name == "Avatar") as InstanceNode;
+  avatar.setProperties({
+    Size: "Small",
+    Shape: "Square",
+    Type: "Image",
+    State: "Default"
+  })
+  let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+  avatarImage.setProperties({ Participant: "Bot" })
 
   //Set the message text
   let message = nextMessage.findAll(node => node.type === "TEXT" && node.name == "Text")[positionInGroup] as TextNode;
