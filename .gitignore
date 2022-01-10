@@ -4,7 +4,6 @@ npm-debug.log
 package-lock.json
 .env
 dist/
-dist/ui.html
 
 # mac
 .DS_Store
