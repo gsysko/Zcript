@@ -65,6 +65,7 @@ async function setUp() {
     widget.fills = [];
     widget.layoutMode = "VERTICAL";
     widget.primaryAxisSizingMode = "AUTO";
+    widget.counterAxisSizingMode = "AUTO";
     widget.counterAxisAlignItems = "MAX";
     widget.itemSpacing = 8;
 
