@@ -45,6 +45,16 @@ figma.ui.onmessage = async msg => {
 //~~Function to set up a new conversation~~//
 async function setUp() {
   if (!log) {
+    //Set up styles
+    let backgroundStyle = await figma.importStyleByKeyAsync("e94370ef7b3a645e93bd29da94dc67ad6b6ec52e").catch(() => {
+      figma.notify("Zcripter requires the 'Zendesk Theme (Default)' library.");
+      figma.closePlugin();
+    }) as BaseStyle;
+    let backgroundEffect = await figma.importStyleByKeyAsync("20b0405ad7024a20ad878b90b3b75bd5bb26443a").catch(() => {
+      figma.notify("Zcripter requires the 'Garden' library.");
+      figma.closePlugin();
+    }) as BaseStyle;
+
     //Find last widget...
     let otherWidgets = figma.currentPage.findAll(node => node.name == "Widget")
 
@@ -76,15 +86,7 @@ async function setUp() {
     messenger.resize(380, 700);
     messenger.layoutMode = "VERTICAL";
     messenger.primaryAxisSizingMode = "FIXED";
-    let backgroundStyle = await figma.importStyleByKeyAsync("e94370ef7b3a645e93bd29da94dc67ad6b6ec52e").catch(() => {
-      figma.notify("Zcripter requires the 'Zendesk Theme (Default)' library.");
-      figma.closePlugin();
-    }) as BaseStyle;
     messenger.fillStyleId = backgroundStyle.id;
-    let backgroundEffect = await figma.importStyleByKeyAsync("20b0405ad7024a20ad878b90b3b75bd5bb26443a").catch(() => {
-      figma.notify("Zcripter requires the 'Garden' library.");
-      figma.closePlugin();
-    }) as BaseStyle;
     messenger.effectStyleId = backgroundEffect.id;
     widget.appendChild(messenger);
 
