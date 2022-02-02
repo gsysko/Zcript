@@ -1,8 +1,8 @@
 import './ui.css'
-const DAVINCI_URL = 'https://api.openai.com/v1/engines/davinci/completions';
-const CURIE_URL = 'https://api.openai.com/v1/engines/curie/completions';
-const BABBAGE_URL = 'https://api.openai.com/v1/engines/babbage/completions';
-const ADA_URL = 'https://api.openai.com/v1/engines/ada/completions';
+const DAVINCI_URL = 'https://api.openai.com/v1/engines/text-davinci-001/completions';
+const CURIE_URL = 'https://api.openai.com/v1/engines/text-curie-001/completions';
+const BABBAGE_URL = 'https://api.openai.com/v1/engines/text-babbage-001/completions';
+const ADA_URL = 'https://api.openai.com/v1/engines/text-ada-001/completions';
 
 var messageLog = "The following is a conversation with an AI assistant named Answer Bot. Answer Bot is helpful, creative, clever, and very friendly.\n\nHuman:Hello\nAnswer Bot:Hello. What is your name?\nHuman:My name is Graham.\nAnswer Bot:Nice to meet you Graham. How can I help?"
 
