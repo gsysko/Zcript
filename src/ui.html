@@ -1,13 +1,23 @@
-<form id="composer" onsubmit="return sendAndClear();">
-  <div id="row" style="border: 1px solid #17494D; border-radius: 20px;">
+<div id="composer">
+  <div class="row" style="border: 1px solid #17494D; border-radius: 20px;">
     <input id="message" type="text" placeholder="Type a message..."><input type="image" src="<%= require('./img_submit.png') %>" alt="Submit" id="send" value="send">
   </div>
-  <div id="row" style="justify-content: center;">
-    <span>↓</span>
-    <label class="switch">
-      <input id="direction" type="checkbox" checked="true">
-      <span class="slider round"></span>
-    </label>
-    <span>↑</span>
+  <div class="row" style="justify-content: center;">
+    <div class="col" style="flex: 1;">
+      <button id="photo" class="c-btn c-btn--sm c-btn--basic c-btn--pill c-btn--icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13C1 13.5523 1.44772 14 2 14H14C14.5523 14 15 13.5523 15 13V5.14286C15 4.59057 14.5523 4.14286 14 4.14286H12V4C12 2.89543 11.1046 2 10 2H6C4.89543 2 4 2.89543 4 4V4.14286H2C1.44772 4.14286 1 4.59057 1 5.14286V13ZM2 5.14286V6.14286V12V13H3H13H14V12V6.14286V5.14286H13H12H11V4.14286V4C11 3.44772 10.5523 3 10 3H6C5.44772 3 5 3.44772 5 4V4.14286V5.14286H4H3H2ZM8 12C9.65685 12 11 10.6569 11 9C11 7.34315 9.65685 6 8 6C6.34315 6 5 7.34315 5 9C5 10.6569 6.34315 12 8 12ZM10 9C10 10.1046 9.10457 11 8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9Z" fill="#68737D"/></svg></button>
+      <button id="file" class="c-btn c-btn--sm c-btn--basic c-btn--pill c-btn--icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" focusable="false" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" d="M9.5 4v7.7c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5V3C6.5 1.6 7.6.5 9 .5s2.5 1.1 2.5 2.5v9c0 1.9-1.6 3.5-3.5 3.5S4.5 13.9 4.5 12V4"/></svg></button>
+      <button id="quick_reply" class="c-btn c-btn--sm c-btn--basic c-btn--pill c-btn--icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" focusable="false" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" d="M12.17 7.5H9.5L12.96 1c.12-.28-.01-.5-.29-.5H7.5c-.28 0-.6.22-.71.5L4.21 7c-.11.28.01.5.29.5h2.45l-2.64 7.24c-.19.51-.04.95.59.38l7.29-6.87c.43-.4.4-.75-.02-.75z"/></svg></button>
+    </div>
+    <div class="col" style="flex: 0; justify-content: center;">
+      <button id="participant" class="c-btn c-btn--sm c-btn--basic c-btn--pill c-btn--icon"><img src="<%= require('./img_bot.png') %>"/></button>
+      <span>↓</span>
+      <label class="switch">
+        <input id="direction" type="checkbox" checked="true">
+        <span class="slider round"></span>
+      </label>
+      <span>↑</span>
+      <div class="spacer_32"></div>
+    </div>
+    <div class="col" style="flex: 1;"></div>
   </div>
-</form>
+</div>

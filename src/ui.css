@@ -1,10 +1,21 @@
+body {
+  padding: 8px;
+}
 textarea:focus, input:focus{
     outline: none;
 }
-#row{
+.row{
   display: flex;
   align-items: center;
   margin-block-end: 4px;
+}
+.col{
+  display: flex;
+  align-items: center;
+}
+.spacer_32 {
+  width: 32px;
+  height: 32px;
 }
 #message {
   flex: 1 0 40px;
@@ -16,7 +27,7 @@ textarea:focus, input:focus{
 #send {
   flex: 0 1;
   height: 24px;
-  padding: 8px;
+  margin-right: 8px;
 }
 .switch {
   position: relative;

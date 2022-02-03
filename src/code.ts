@@ -35,7 +35,7 @@ figma.ui.onmessage = async msg => {
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this...
   if (msg.type === 'create-message') {
-    await sendMessage(msg.message, msg.direction);
+    await sendMessage(msg.message, msg.direction, msg.isBot);
   } else if (msg.type === 'setup') {
     //If there is not a conversation...
     await setUp();
@@ -154,7 +154,7 @@ async function setUp() {
 }
 
 //~~Function to send a message~~//
-async function sendMessage(messageText: string, directionIsOutbound: boolean) {
+async function sendMessage(messageText: string, directionIsOutbound: boolean, isBot: boolean) {
   let positionInGroup: number;
   //Find the last message in the conversation frame...
   let lastMessage = log.children[log.children.length-1] as InstanceNode
@@ -192,13 +192,45 @@ async function sendMessage(messageText: string, directionIsOutbound: boolean) {
 
     //Insert the new message.
     log.insertChild(messageCount, nextMessage);
+  }
 
-    //Set the author label, if it is an inbound message
-    if (!directionIsOutbound) {
+  //If outbound...
+  if (!directionIsOutbound) {
+    //...and is bot...
+    if (isBot) {
+      //Set the author label
       let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
       await figma.loadFontAsync(label.fontName as FontName).then(() => {
-        label.characters = "Marilyn Collins";
+        label.characters = "Answer Bot";
       });
+
+      //Set the avatar
+      let avatar = nextMessage.findOne(node => node.name == "Avatar") as InstanceNode;
+      avatar.setProperties({
+        Size: "Small",
+        Shape: "Square",
+        Type: "Image",
+        State: "Default"
+      })
+      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      avatarImage.setProperties({ Participant: "Bot" })
+    } else {
+      //Set the author label, if it is an inbound message
+      let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
+      await figma.loadFontAsync(label.fontName as FontName).then(() => {
+        label.characters = "Christina";
+      });
+
+      //Set the avatar
+      let avatar = nextMessage.findOne(node => node.name == "Avatar") as InstanceNode;
+      avatar.setProperties({
+        Size: "Small",
+        Shape: "Circle",
+        Type: "Image",
+        State: "Default"
+      })
+      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      avatarImage.setProperties({ Participant: "Agent (Christina)" })
     }
   }
 
