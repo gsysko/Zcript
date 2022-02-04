@@ -9,13 +9,25 @@ var isBot = true
 
 // const composer = document.getElementById("composer") as HTMLFormElement;
 // composer.onsubmit = function() {return sendAndClear()}
+const direction = document.getElementById('direction') as HTMLInputElement;
+direction.onchange = event => {
+  quickReplyButton.style.visibility = direction.checked ? "hidden" : "visible"
+  quickReplyButton.style.opacity = direction.checked ? "0" : "1"
+}
 
-let input = document.getElementById("message") as HTMLInputElement
+const input = document.getElementById("message") as HTMLInputElement
 input.onkeydown = event => {if(event.key == "Enter")sendAndClear()}
-let sendButton = document.getElementById("send") as HTMLInputElement
+const sendButton = document.getElementById("send") as HTMLInputElement
 sendButton.onclick = event => sendAndClear()
 
-let participantButton = document.getElementById("participant") as HTMLButtonElement
+const imgButton = document.getElementById("image") as HTMLButtonElement
+imgButton.onclick = event => {sendImage()}
+const fileButton = document.getElementById("file") as HTMLButtonElement
+fileButton.onclick = event => {sendFile()}
+const quickReplyButton = document.getElementById("quick_reply") as HTMLButtonElement
+quickReplyButton.onclick = event => {sendQuickReply()}
+
+const participantButton = document.getElementById("participant") as HTMLButtonElement
 participantButton.onclick = event => {
   isBot = !isBot
   if (isBot) {participantButton.getElementsByTagName("img")[0].setAttribute("src", imgBot)}
@@ -30,10 +42,22 @@ window.onload = function() {
 function sendAndClear() {
   const textbox = document.getElementById('message') as HTMLInputElement;
   const message = textbox.value;
-  const direction = document.getElementById('direction') as HTMLInputElement;
-  parent.postMessage({ pluginMessage: { type: 'create-message', message: message, direction: direction.checked, isBot: isBot} }, '*');
-  direction.checked = !direction.checked
+  parent.postMessage({ pluginMessage: { type: 'create-message', messageType: "text", message: message, direction: direction.checked, isBot: isBot} }, '*');
+  //Experimenting with no longer alternating direction automoatically - maybe later this should be a user selected option.
+  // direction.checked = !direction.checked
   textbox.value = "";
   textbox.focus();
-  return false;
+}
+
+function sendImage() {
+  const direction = document.getElementById('direction') as HTMLInputElement;
+  parent.postMessage({ pluginMessage: { type: 'create-message', messageType: "image", message: null, direction: direction.checked, isBot: isBot} }, '*');
+}
+function sendFile() {
+  const direction = document.getElementById('direction') as HTMLInputElement;
+  parent.postMessage({ pluginMessage: { type: 'create-message', messageType: "file", message: null, direction: direction.checked, isBot: isBot} }, '*');
+}
+function sendQuickReply() {
+  const direction = document.getElementById('direction') as HTMLInputElement;
+  parent.postMessage({ pluginMessage: { type: 'create-message', messageType: "quick reply", message: null, direction: direction.checked, isBot: isBot} }, '*');
 }
