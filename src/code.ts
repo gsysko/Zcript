@@ -10,7 +10,7 @@ var log: FrameNode
 
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__)
-figma.ui.resize(400, 104)
+figma.ui.resize(400, 100)
 
 //Secret bootstrap point setter -- commment out when not in use.
 // let launcher = figma.currentPage.selection.find(node => (node.type == "COMPONENT" || node.type == "INSTANCE") && node.parent.name == "Launcher")
@@ -34,11 +34,13 @@ figma.ui.onmessage = async msg => {
   }
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this...
-  if (msg.type === 'create-message') {
-    await sendMessage(msg.message, msg.direction);
-  } else if (msg.type === 'setup') {
-    //If there is not a conversation...
-    await setUp();
+  switch (msg.type) {
+    case 'setup':
+      await setUp()
+      break
+    case 'create-message':
+      await sendMessage(msg.messageType, msg.message, msg.direction, msg.isBot)
+      break
   }
 };
 
@@ -154,70 +156,151 @@ async function setUp() {
 }
 
 //~~Function to send a message~~//
-async function sendMessage(messageText: string, directionIsOutbound: boolean) {
-  let positionInGroup: number;
+async function sendMessage(messageType: string, messageText: string, directionIsOutbound: boolean, isBot: boolean) {
   //Find the last message in the conversation frame...
-  let lastMessage = log.children[log.children.length-1] as InstanceNode
-  //..and Set the messageCount to the numbered name of this message
-  messageCount = parseInt(lastMessage.name)
+  let lastMessageGroup = log.children[log.children.length-1] as InstanceNode
+  //...and set the messageCount to the numbered name of this message
+  messageCount = parseInt(lastMessageGroup.name)
+  let positionInGroup: number
+
+  //If last message type is quick reply, it must be cleaned up.
+  if (lastMessageGroup.mainComponent.parent.name == "Quick replies") {
+    lastMessageGroup.remove()
+    lastMessageGroup = log.children[log.children.length-1] as InstanceNode
+    messageCount--
+  }
+
+  //If message type is quick reply just add it, as it cannot be grouped.
+  if (messageType == "quick reply") {
+    let quickRepliesComponent: ComponentNode
+    await figma.importComponentSetByKeyAsync("b929d6648712cdcae0f3ce4a4195d2ea70badca2").then( quickRepliesComponentSet => {
+      quickRepliesComponent = quickRepliesComponentSet.findChild(component => true) as ComponentNode
+    })
+    var quickRepliesInstance = quickRepliesComponent?.createInstance()
+    quickRepliesInstance.layoutAlign = "STRETCH"
+    quickRepliesInstance.name = (++messageCount).toString();
+
+    //Insert the new message.
+    log.insertChild(messageCount, quickRepliesInstance);
+
+    //Check that the log has not become filled
+    if (quickRepliesInstance.y + quickRepliesInstance.height > log.height) {
+      log.primaryAxisAlignItems = "MAX"
+    }
+    return
+  }
 
   //If participant hasn't changed since last message...
-  if ((directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Outbound")) ||
-  (!directionIsOutbound && lastMessage.mainComponent.name.startsWith("Direction=Inbound"))) {
-    //Add to the existing group
-    positionInGroup = lastMessage.findAll(node => node.name.startsWith("Message ")).length
-    if (positionInGroup < 3) {
+  if ((directionIsOutbound && lastMessageGroup.mainComponent.name.startsWith("Direction=Outbound")) ||
+  (!directionIsOutbound && lastMessageGroup.mainComponent.name.startsWith("Direction=Inbound"))) {
+    positionInGroup = parseInt(lastMessageGroup.variantProperties.Messages) + 1
+    //Add to the existing message group
+    var nextMessageGroup = lastMessageGroup
+    if (positionInGroup < 4) {
       //TODO Investigate making this scalable beyond 3 messages by appending an new message, vs swapping component.
-      var nextMessage = lastMessage
-      nextMessage.swapComponent(nextMessage.mainComponent.parent.findChild(node => node.name == nextMessage.mainComponent.name.substr(0, nextMessage.mainComponent.name.length-1) + (positionInGroup + 1)) as ComponentNode)
+      nextMessageGroup.setProperties({
+        Direction: nextMessageGroup.variantProperties.Direction,
+        Messages: (positionInGroup).toString()
+      })
     } else {
-      positionInGroup = 2
-      var nextMessage = lastMessage
       figma.notify("Conversation Kit currently only supports 3 consecutive messages.")
+      return
     }
   } else {
-    positionInGroup = 0
-    //Create a new message...
+    //Start a new message group...
+    positionInGroup = 1
     let messageGroupComponent: ComponentNode
     await figma.importComponentSetByKeyAsync("98e8f2af5cef20537dfbfb1dc294f6fc1f60d466").then( messageGroupComponentSet => {
       messageGroupComponent = directionIsOutbound ? messageGroupComponentSet.findChild(component => component.name === "Direction=Outbound, Messages=1") as ComponentNode : messageGroupComponentSet.findChild(component => component.name === "Direction=Inbound, Messages=1") as ComponentNode
     })
-    var nextMessage = messageGroupComponent?.createInstance()
-    nextMessage.layoutAlign = "STRETCH"
-    nextMessage.name = (++messageCount).toString();
+    var nextMessageGroup = messageGroupComponent?.createInstance()
+    nextMessageGroup.layoutAlign = "STRETCH"
+    nextMessageGroup.name = (++messageCount).toString();
 
     //Turn off receipts on previous message, if there is one
-    let receipt = lastMessage.findOne(node => node.name == "Receipt")
+    let receipt = lastMessageGroup.findOne(node => node.name == "Receipt")
     if (receipt) receipt.visible = false
 
     //Insert the new message.
-    log.insertChild(messageCount, nextMessage);
+    log.insertChild(messageCount, nextMessageGroup);
+  }
 
-    //Set the author label, if it is an inbound message
-    if (!directionIsOutbound) {
-      let label = nextMessage.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
+  //If outbound...
+  if (!directionIsOutbound) {
+    //...and is bot...
+    if (isBot) {
+      //Set the author label
+      let label = nextMessageGroup.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
       await figma.loadFontAsync(label.fontName as FontName).then(() => {
-        label.characters = "Marilyn Collins";
+        label.characters = "Answer Bot";
       });
+
+      //Set the avatar
+      let avatar = nextMessageGroup.findOne(node => node.name == "Avatar") as InstanceNode;
+      avatar.setProperties({
+        Size: "Small",
+        Shape: "Square",
+        Type: "Image",
+        State: "Default"
+      })
+      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      avatarImage.setProperties({ Participant: "Bot" })
+    } else {
+      //Set the author label, if it is an inbound message
+      let label = nextMessageGroup.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
+      await figma.loadFontAsync(label.fontName as FontName).then(() => {
+        label.characters = "Christina";
+      });
+
+      //Set the avatar
+      let avatar = nextMessageGroup.findOne(node => node.name == "Avatar") as InstanceNode;
+      avatar.setProperties({
+        Size: "Small",
+        Shape: "Circle",
+        Type: "Image",
+        State: "Default"
+      })
+      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      avatarImage.setProperties({ Participant: "Agent (Christina)" })
     }
   }
 
-  //Set the message text
-  let message = nextMessage.findAll(node => node.type === "TEXT" && node.name == "Text")[positionInGroup] as TextNode;
-  await figma.loadFontAsync(message.fontName as FontName).then(() => {
-    message.characters = messageText;
-  });
-
-  //Checkt that the message should not be multi-line
-  //TODO compare size of log width, so this would still work no matter the device width
-  if( nextMessage.mainComponent.name.startsWith("Direction=Outbound") ? message.width > 260 : message.width > 240 ){
-    let messageComponent = (nextMessage.findAll(node => node.name.startsWith("Message "))[positionInGroup] as InstanceNode)
-    let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
-    messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
+  let message = nextMessageGroup.findOne(node => node.name == "Message " + (positionInGroup)) as InstanceNode
+  switch (messageType) {
+    case "text":
+      //Set the message text
+      let text = message.findOne(node => node.type === "TEXT" && node.name == "Text") as TextNode;
+      await figma.loadFontAsync(text.fontName as FontName).then(() => {
+        text.characters = messageText;
+      });
+      //Check that the message should not be multi-line
+      //TODO compare size of log width, so this would still work no matter the device width
+      if( nextMessageGroup.mainComponent.name.startsWith("Direction=Outbound") ? text.width > 260 : text.width > 240 ){
+        let messageComponent = (nextMessageGroup.findAll(node => node.name.startsWith("Message "))[positionInGroup-1] as InstanceNode)
+        let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
+        messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
+      }
+      break
+    case "image":
+      message.setProperties({
+        Type: "Image",
+        Multiline: "True",
+        State: "Sent"
+      })
+      break
+    case "file":
+      message.setProperties({
+        Type: "File",
+        Multiline: "True",
+        State: "Sent"
+      })
+      break
+    case "quick reply":
+      break
   }
 
   //Check that the log has not become filled
-  if (nextMessage.y + nextMessage.height > log.height) {
+  if (nextMessageGroup.y + nextMessageGroup.height > log.height) {
     log.primaryAxisAlignItems = "MAX"
   }
 }
