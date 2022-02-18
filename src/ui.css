@@ -7,7 +7,7 @@ textarea:focus, input:focus{
 .agent-actions {
   visibility: "hidden";
   opacity: 0;
-  transition: .4s;
+  transition: opacity .4s ease-in-out;
 }
 .row{
   display: flex;

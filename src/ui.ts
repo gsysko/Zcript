@@ -11,8 +11,11 @@ var isBot = true
 // composer.onsubmit = function() {return sendAndClear()}
 const direction = document.getElementById('direction') as HTMLInputElement;
 direction.onchange = event => {
-  quickReplyButton.style.visibility = direction.checked ? "hidden" : "visible"
-  quickReplyButton.style.opacity = direction.checked ? "0" : "1"
+  let actions = document.getElementsByClassName('agent-actions')
+  Array.prototype.forEach.call(actions, function(action) {
+    action.style.visibility = direction.checked ? "hidden" : "visible"
+    action.style.opacity = direction.checked ? "0" : "1"
+  });
 }
 
 const input = document.getElementById("message") as HTMLInputElement

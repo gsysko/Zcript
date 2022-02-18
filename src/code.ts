@@ -274,11 +274,10 @@ async function sendMessage(messageType: string, messageText: string, directionIs
         text.characters = messageText;
       });
       //Check that the message should not be multi-line
-      //TODO compare size of log width, so this would still work no matter the device width
-      if( nextMessageGroup.mainComponent.name.startsWith("Direction=Outbound") ? text.width > 260 : text.width > 240 ){
-        let messageComponent = (nextMessageGroup.findAll(node => node.name.startsWith("Message "))[positionInGroup-1] as InstanceNode)
-        let messageComponentSet = messageComponent.mainComponent.parent as ComponentSetNode
-        messageComponent.swapComponent((messageComponentSet.children[0] as ComponentNode))
+      if( nextMessageGroup.mainComponent.name.startsWith("Direction=Outbound") ? text.width > log.width-92-28 : text.width > log.width-64-60 ){
+        message.setProperties({
+          Multiline: "True"
+        })
       }
       break
     case "image":
