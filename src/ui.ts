@@ -7,8 +7,6 @@ import imgHuman from './img_human.png'
 
 var isBot = true
 
-// const composer = document.getElementById("composer") as HTMLFormElement;
-// composer.onsubmit = function() {return sendAndClear()}
 const direction = document.getElementById('direction') as HTMLInputElement;
 direction.onchange = event => {
   let actions = document.getElementsByClassName('agent-actions')
