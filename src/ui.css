@@ -5,8 +5,8 @@ textarea:focus, input:focus{
     outline: none;
 }
 .agent-actions {
-  visibility: "hidden";
-  opacity: 0;
+  visibility: "visible";
+  opacity: 1;
   transition: opacity .4s ease-in-out;
 }
 .row{
