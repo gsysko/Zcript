@@ -440,9 +440,23 @@ async function sendMessage(messageType: string, messageText: string, directionIs
 
   //If last message type is quick reply, it must be cleaned up.
   if (lastMessageGroup.mainComponent.parent.name == "Quick replies") {
-    lastMessageGroup.remove()
-    lastMessageGroup = log.children[log.children.length-1] as InstanceNode
-    messageCount--
+    if (messageType == "quick reply") {
+      let replyCount = parseInt(lastMessageGroup.getPluginData("replies"))
+      if (replyCount > 15) {
+        figma.notify("More than 16 not supported")
+      }
+      lastMessageGroup.setPluginData("replies", (++replyCount).toString())
+      let rows = Math.ceil(replyCount / 4)
+      lastMessageGroup.setProperties({Rows: rows.toString()})
+      let columns = replyCount % 4 ? replyCount % 4 : 4
+      let lastRow = lastMessageGroup.findChild(node => node.name == "Row " + rows) as InstanceNode
+      lastRow.setProperties({Replies: columns.toString()})
+      return
+    } else {
+      lastMessageGroup.remove()
+      lastMessageGroup = log.children[log.children.length-1] as InstanceNode
+      messageCount--
+    }
   }
 
   //If message type is quick reply just add it, as it cannot be grouped.
@@ -454,6 +468,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
     var quickRepliesInstance = quickRepliesComponent?.createInstance()
     quickRepliesInstance.layoutAlign = "STRETCH"
     quickRepliesInstance.name = (++messageCount).toString();
+    quickRepliesInstance.setPluginData("replies", "1")
     applyColor(quickRepliesInstance)
 
     //Insert the new message.
