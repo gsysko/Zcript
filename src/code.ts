@@ -438,8 +438,9 @@ async function sendMessage(messageType: string, messageText: string, directionIs
   messageCount = parseInt(lastMessageGroup.name)
   let positionInGroup: number
 
-  //If last message type is quick reply, it must be cleaned up.
+  //If last message type is quick reply...
   if (lastMessageGroup.mainComponent.parent.name == "Quick replies") {
+    //...and next message is a quick reply, add to group.
     if (messageType == "quick reply") {
       let replyCount = parseInt(lastMessageGroup.getPluginData("replies"))
       if (replyCount > 15) {
@@ -453,6 +454,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
       lastRow.setProperties({Replies: columns.toString()})
       return
     } else {
+      //Else clean up the quick reply.
       lastMessageGroup.remove()
       lastMessageGroup = log.children[log.children.length-1] as InstanceNode
       messageCount--
