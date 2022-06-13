@@ -1,4 +1,4 @@
-const THEME_MESSAGING = [
+const LEGACY_THEME_MESSAGING = [
   {
     "name": "primary",
     "key": "e5443fa4baf8e1c1127fbdfc733306f9e4329d03",
@@ -132,8 +132,7 @@ const THEME_MESSAGING = [
     "type": "PAINT"
   }
 ]
-const THEME_ZENDESK = [
-  
+const LEGACY_THEME_ZENDESK = [
   {
     "name": "primary",
     "key": "ef31f973947bf366fc155f8f1d1b5c9615f6fcae",
@@ -263,6 +262,310 @@ const THEME_ZENDESK = [
   {
     "name": "onNote",
     "key": "e2510f9b0c5b036e4ef04ff7f0dac1d0f6e7fc3a",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  }
+]
+const THEME_MESSAGING = [
+  {
+    "name": "primary",
+    "key": "5beedf916e5ba9df061a6190364a7b6cd3875925",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedPrimary",
+    "key": "29bc03eefd846a37181062777d981bb4debdf540",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "message",
+    "key": "6fe43e974e632be9b11fac89e2d3b0955643094e",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedMessage",
+    "key": "e79e7770c5db15e60089cee196d72e7f4d118484",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "action",
+    "key": "cb436db74a1b5f4880490f069fd454b7b65d6bad",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedAction",
+    "key": "8c92e22a1b0272e773320e2e5b8f929ff2ad0908",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onPrimary",
+    "key": "a7d3cd5b69c3f32cbbd2437a3e5e2228a00d72da",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onMessage",
+    "key": "339dd4f6524f41df097082e240e67e9c51674591",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onAction",
+    "key": "b2e38b5ac5e722acdde3bc988eadd6163414a4b2",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "actionBackground",
+    "key": "501dbc18d692d6aa8465a740d1025c0ce9facfd0",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onActionBackground",
+    "key": "815129ecfbea622f588bdb0766321245bd1f606c",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "note",
+    "key": "b3327a112d4b57290044563abf268ad2ae115fe0",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onNote",
+    "key": "316677970c51230ff5ca0f5a86c1e039924f0865",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "inboundMessage",
+    "key": "9f75dead04abba7134689230da777924a2130be8",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "systemMessage",
+    "key": "0c0e5c0676301a8ea9a5dc6fb1b70fdd5028efee",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "borderSystemMessage",
+    "key": "25e89c6025e0ecdee18d161a543149b6a9a44d0a",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "background",
+    "key": "beb55fec14b02dfcdc39b5f6d262a7b23e17dcc1",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onBackground",
+    "key": "c2280481b2c5146e27b8bc84486bb586e93204e9",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "elevated",
+    "key": "7daad5f47047f3fc8cdd1791d05037e1fa2b14c7",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "danger",
+    "key": "6489aa8b199f5befad6d03f2381ed36596dcc034",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onDanger",
+    "key": "f9d919b51c348d1c2b4952089cda6d563f04469c",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "success",
+    "key": "568b4b64344a1ec285245075249dacf593b6f509",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "notify",
+    "key": "6fb8cd96453762d9a92a43988db571e3dddb141b",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "disabled",
+    "key": "9d48d47863dab62909cc2f50b0f7d7fe35c80ab8",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "icon",
+    "key": "7f17593681d6bc61eaae70d7b2c11a2d4bdcb3ca",
+    "theme": "Messaging (light)",
+    "type": "PAINT"
+  }
+]
+const THEME_ZENDESK = [
+  {
+    "name": "primary",
+    "key": "bf87155d30dbbd8b2938ea75e4e38b232bd8b411",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedPrimary",
+    "key": "3172cf251eb5efd3aab7e9b74924245348e21767",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "message",
+    "key": "fdd6facaaaccf390dc2f3837f79ee974bf292529",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedMessage",
+    "key": "e9db3ca314777aadfc0553374dfce4315ef85a0d",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "action",
+    "key": "16f27893231b978c2783be8ea609293843687786",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "focusedAction",
+    "key": "b42d74fa99f44874e88d7bca54ee644c6e7e8742",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onPrimary",
+    "key": "b14f0cdb1b8bada152555bf750e87a4b08111686",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onMessage",
+    "key": "b6ab708f33e12dc904c5d4d998124e68256336a4",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onAction",
+    "key": "9404368ab712076eb39872b39ed6542959670122",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "actionBackground",
+    "key": "ca9be8606f4619972d2e463d82752781c56b6542",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onActionBackground",
+    "key": "5598eac77ed1b14e75d5283327d4bdbe96e5ee09",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "note",
+    "key": "fcd1f793ecc9442bfe884de133adf17e4d046975",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onNote",
+    "key": "c62cfd2f389cd101d1e9c647c1ee3e9da8d9d4e5",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "inboundMessage",
+    "key": "bd211e22f148db1e16db5af5ac3d306b76db6e38",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "systemMessage",
+    "key": "22bb0515a63bb597fb581c87e684ed5e47f62a59",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "borderSystemMessage",
+    "key": "ea6d2dd3b979568e3dadde2f55ab4b4b99633141",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "background",
+    "key": "fd73eb89b9d8ca51c3e721b54a8b77b3871e3189",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onBackground",
+    "key": "d194886b6bef18911df194192dbbb254416354cc",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "elevated",
+    "key": "a0f36b2eaad81aaee4dc30cb4217d7621dfa19fc",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "danger",
+    "key": "161ae0cc948555b2c33a2731b9c62811817a7729",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "onDanger",
+    "key": "83c4d892534676ea83a71ab946f830c8ccde82f6",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "success",
+    "key": "65cbf8c0e2588e30a7937105d935c3be66d6d906",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "notify",
+    "key": "002e4f8c1fc8239b6e16fcf01a110178824234d5",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "disabled",
+    "key": "0b582e7883a5d86e41e7e6dfb8f21750210e0638",
+    "theme": "Zendesk (light)",
+    "type": "PAINT"
+  },
+  {
+    "name": "icon",
+    "key": "2fdf32794a19801b3bff833a7e0b9a8058caf9cf",
     "theme": "Zendesk (light)",
     "type": "PAINT"
   }
@@ -452,6 +755,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
       let columns = replyCount % 4 ? replyCount % 4 : 4
       let lastRow = lastMessageGroup.findChild(node => node.name == "Row " + rows) as InstanceNode
       lastRow.setProperties({Replies: columns.toString()})
+      applyColor(lastMessageGroup)
       return
     } else {
       //Else clean up the quick reply.
@@ -697,7 +1001,7 @@ function applyColor(node) {
 //find matching styles based
 function findMatchInSelectedTheme(styleKey) {
   // this gets item in the array which matches the current style applied
-  let currentStyle = THEME_ZENDESK.find(style => style.key === styleKey);
+  let currentStyle = LEGACY_THEME_ZENDESK.find(style => style.key === styleKey) || THEME_ZENDESK.find(style => style.key === styleKey);
   
   // if we find a matching style execute this
   if (currentStyle) {
@@ -706,7 +1010,7 @@ function findMatchInSelectedTheme(styleKey) {
       //we need the name of the current style so we can search the jsonbin array
       //for matches with the selected theme
       let name = currentStyle.name;
-      let matchedStyle = THEME_MESSAGING.find(style => style.name === name);
+      let matchedStyle = LEGACY_THEME_MESSAGING.find(style => style.name === name) || THEME_MESSAGING.find(style => style.name === name);
      
       if (matchedStyle) {
           //if we find a match in the selected theme, we will return the style key
