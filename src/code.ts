@@ -623,8 +623,8 @@ figma.ui.onmessage = async msg => {
 async function setUp() {
   if (!log) {
     //Set up styles
-    let backgroundStyle = await figma.importStyleByKeyAsync("e94370ef7b3a645e93bd29da94dc67ad6b6ec52e").catch(() => {
-      figma.notify("Zcripter requires the 'Zendesk Theme (Default)' library.");
+    let backgroundStyle = await figma.importStyleByKeyAsync("beb55fec14b02dfcdc39b5f6d262a7b23e17dcc1").catch(() => {
+      figma.notify("Zcripter requires the 'Theme: Messaging (Default)' library.");
       figma.closePlugin();
     }) as BaseStyle;
     let backgroundEffect = await figma.importStyleByKeyAsync("20b0405ad7024a20ad878b90b3b75bd5bb26443a").catch(() => {
@@ -1010,7 +1010,7 @@ function findMatchInSelectedTheme(styleKey) {
       //we need the name of the current style so we can search the jsonbin array
       //for matches with the selected theme
       let name = currentStyle.name;
-      let matchedStyle = LEGACY_THEME_MESSAGING.find(style => style.name === name) || THEME_MESSAGING.find(style => style.name === name);
+      let matchedStyle = THEME_MESSAGING.find(style => style.name === name) || LEGACY_THEME_MESSAGING.find(style => style.name === name);
      
       if (matchedStyle) {
           //if we find a match in the selected theme, we will return the style key
