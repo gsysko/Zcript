@@ -829,7 +829,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
       //Set the author label
       let label = nextMessageGroup.findOne(node => node.type === "TEXT" && node.name == "Label") as TextNode;
       await figma.loadFontAsync(label.fontName as FontName).then(() => {
-        label.characters = "Answer Bot";
+        label.characters = "Zendesk Bot";
       });
 
       //Set the avatar
