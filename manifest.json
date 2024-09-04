@@ -8,5 +8,8 @@
   "relaunchButtons": [
     {"command": "open", "name": "Add messages"},
     {"command": "start", "name": "Start conversation"}
-  ]
+  ],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }

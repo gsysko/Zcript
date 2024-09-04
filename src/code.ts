@@ -853,7 +853,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
       let avatar = nextMessageGroup.findOne(node => node.name == "Avatar") as InstanceNode;
       avatar.setProperties({
         Size: "Small",
-        Shape: "Circle",
+        Shape: "Square",
         Type: "Image",
         State: "Default"
       })
