@@ -840,7 +840,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
         Type: "Image",
         State: "Default"
       })
-      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      let avatarImage = avatar.findOne(node => node.name == "Images") as InstanceNode
       avatarImage.setProperties({ Participant: "Bot" })
     } else {
       //Set the author label, if it is an inbound message
@@ -857,7 +857,7 @@ async function sendMessage(messageType: string, messageText: string, directionIs
         Type: "Image",
         State: "Default"
       })
-      let avatarImage = avatar.findChild(node => node.name == "Images") as InstanceNode
+      let avatarImage = avatar.findOne(node => node.name == "Images") as InstanceNode
       avatarImage.setProperties({ Participant: "Agent (Christina)" })
     }
   }
